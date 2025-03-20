@@ -1,4 +1,3 @@
-import pymongo
 import pandas as pd
 from openai import OpenAI
 from dotenv import load_dotenv
@@ -25,6 +24,9 @@ def get_embedding(text: str) -> list[float]:
 
 @function_tool
 def rag(query: str) -> str:
+
+    print('----Product', query)
+
     collection = chroma_client.get_collection(name=collection_name)
     query_embedding = get_embedding(query)
     query_embedding = query_embedding / np.linalg.norm(query_embedding)
@@ -53,6 +55,9 @@ def rag(query: str) -> str:
 
 @function_tool
 def shop_information_rag():
+
+    print('----Information')
+
     import gspread
     from oauth2client.service_account import ServiceAccountCredentials
 

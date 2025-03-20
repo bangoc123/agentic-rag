@@ -6,3 +6,4 @@ pandas
 gspread
 oauth2client
 flask_cors
+streamlit
