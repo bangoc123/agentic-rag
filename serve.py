@@ -2,15 +2,18 @@ from agents import Agent, Runner, function_tool, handoff, RunContextWrapper, tra
 from agents.extensions import handoff_filters
 from agents.handoffs import HandoffInputData
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import asyncio
 import os
 from dotenv import load_dotenv
 load_dotenv()
 
 from prompt import MANAGER_INSTRUCTION, PRODUCT_INSTRUCTION, SHOP_INFORMATION_INSTRUCTION
-from rag import rag
+from rag import rag, shop_information_rag
 
 app = Flask(__name__)
+CORS(app)
+
 
 def custom_input_filter(input_data: HandoffInputData) -> HandoffInputData:
     # modified_data = HandoffInputData(
@@ -21,11 +24,6 @@ def custom_input_filter(input_data: HandoffInputData) -> HandoffInputData:
     return input_data
 
 
-@function_tool
-def get_shop_information(shop_info: str) -> dict:
-    return {
-        "content": shop_info
-    }
 
 product_agent = Agent(
     name="product",
@@ -39,7 +37,7 @@ shop_information_agent = Agent(
     name="shop_information",
     instructions=SHOP_INFORMATION_INSTRUCTION,
     tools=[
-        get_shop_information
+        shop_information_rag
     ]
 )
 

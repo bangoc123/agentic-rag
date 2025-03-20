@@ -48,7 +48,31 @@ def rag(query: str) -> str:
 
                     search_result += f"{i}). \n{combined_text}\n\n"
                     i += 1
-
     return search_result
 
+
+@function_tool
+def shop_information_rag():
+    import gspread
+    from oauth2client.service_account import ServiceAccountCredentials
+
+    # Define the scope
+    scope = ['https://spreadsheets.google.com/feeds',
+            'https://www.googleapis.com/auth/drive']
+
+    # Add credentials to the account
+    credentials = ServiceAccountCredentials.from_json_keyfile_name('mles-class-12c1216b7303.json', scope)
+
+    # Authorize the clientsheet
+    client = gspread.authorize(credentials)
+
+    # Get the sheet (by name or by URL)
+    # sheet = client.open('Your Sheet Name').sheet1  # For first sheet
+    sheet = client.open_by_url('https://docs.google.com/spreadsheets/d/1mOkgLyo1oedOG1nlvoSHpqK9-fTFzE9ysLuKob9TXlg').sheet1
+
+    # Example operations
+    # Get all values
+    data = sheet.get_all_records()
+
+    return data
 
