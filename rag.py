@@ -50,6 +50,8 @@ def rag(query: str) -> str:
 
                     search_result += f"{i}). \n{combined_text}\n\n"
                     i += 1
+    
+    print(search_result)
     return search_result
 
 
@@ -78,6 +80,6 @@ def shop_information_rag():
     # Example operations
     # Get all values
     data = sheet.get_all_records()
-
+    print(data)
     return data
 
