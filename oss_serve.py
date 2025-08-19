@@ -26,9 +26,17 @@ def custom_input_filter(input_data: HandoffInputData) -> HandoffInputData:
         # )
     return input_data
 
+def require_env_key(key_name: str) -> str:
+    value = os.getenv(key_name)
+    if not value:
+        print(f"Warning: {key_name} not found in environment variables")
+        raise EnvironmentError(f"{key_name} not found in environment variables")
+    print(f"✓ {key_name} loaded: {value[:8]}...")
+    return value
 
-togetherai_key = os.getenv("TOGETHER_API_KEY")
-groq_key = os.getenv("GROQ_API_KEY")
+
+togetherai_key = require_env_key("TOGETHER_API_KEY")
+groq_key = require_env_key("GROQ_API_KEY")
 
 # Tạo agents với LiteLLM và Kimi model
 print("Creating agents with LiteLLM...")
@@ -49,7 +57,7 @@ try:
         name="product",
         instructions=PRODUCT_INSTRUCTION,
         tools=[rag],
-        model=gpt_oss_20b,
+        model=gpt_oss_120b,
         model_settings=ModelSettings(tool_choice="required")
     )
 
@@ -57,7 +65,7 @@ try:
         name="shop_information",
         instructions=SHOP_INFORMATION_INSTRUCTION,
         tools=[shop_information_rag],
-        model=gpt_oss_120b,
+        model=gpt_oss_20b,
         model_settings=ModelSettings(tool_choice="required")
     )
 
@@ -71,8 +79,7 @@ try:
             ),
             shop_information_agent
         ],
-        model=kimi,
-        model_settings=ModelSettings(tool_choice="required")
+        model=kimi
     )
     print("✓ Agents created successfully with LiteLLM")
 
@@ -97,6 +104,7 @@ def chat():
     try:
         with trace(workflow_name="Conversation", group_id=thread_id):
             new_input = conversation_history[thread_id] + [{"role": "user", "content": query}]
+            # print(f"đoạn thoại: {new_input}")
             result = asyncio.run(Runner.run(manager_agent, new_input))
             conversation_history[thread_id] = new_input + [{"role": "assistant", "content": str(result.final_output)}]
         
@@ -114,13 +122,4 @@ def chat():
 
 
 if __name__ == "__main__":
-    # Kiểm tra API key
-    if not os.getenv("TOGETHER_API_KEY"):
-        print("Warning: TOGETHER_API_KEY not found in environment variables")
-        exit(1)
-    else:
-        print(f"✓ TOGETHER_API_KEY loaded: {os.getenv('TOGETHER_API_KEY')[:8]}...")
-    
-    print(f"✓ Using LiteLLM")
-    
-    app.run(host="0.0.0.0", port=5001, debug=True)
+    app.run(host="0.0.0.0", port=5001, debug=False)
