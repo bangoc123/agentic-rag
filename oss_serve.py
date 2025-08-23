@@ -57,7 +57,7 @@ try:
         name="product",
         instructions=PRODUCT_INSTRUCTION,
         tools=[rag],
-        model=gpt_oss_120b,
+        model=gpt_oss_20b,
         model_settings=ModelSettings(tool_choice="required")
     )
 
@@ -73,10 +73,7 @@ try:
         name="manager",
         instructions=MANAGER_INSTRUCTION,
         handoffs=[
-            handoff(
-                product_agent,
-                input_filter=custom_input_filter,
-            ),
+            product_agent,
             shop_information_agent
         ],
         model=kimi
@@ -122,4 +119,4 @@ def chat():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5001, debug=False)
+    app.run(host="0.0.0.0", port=5001, debug=True)

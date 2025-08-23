@@ -1,9 +1,10 @@
-openai-agents
+openai-agents==0.2.8
 python-dotenv==1.0.1
 chromadb
-openai
+openai==1.99.9
 pandas
 gspread
 oauth2client
 flask_cors
 streamlit
+openai-agents[litellm]
