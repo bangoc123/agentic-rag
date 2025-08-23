@@ -57,7 +57,7 @@ try:
         name="product",
         instructions=PRODUCT_INSTRUCTION,
         tools=[rag],
-        model=gpt_oss_20b,
+        model=gpt_oss_120b,
         model_settings=ModelSettings(tool_choice="required")
     )
 
